@@ -36,9 +36,10 @@ func (h *SeasonHandler) GetSeasons(c *gin.Context) {
 	}
 
 	seasons := make([]Season, len(dbSeasons))
-	for i, db := range dbSeasons {
+	for i, row := range dbSeasons {
 		seasons[i] = Season{
-			Name: db.Name,
+			Name: row.Name,
+			ID:   row.ID,
 		}
 	}
 

@@ -28,9 +28,11 @@ type CreateSeasonReq struct {
 }
 
 type Player struct {
+	ID   uint   `json:"id"`
 	Name string `json:"name"`
 }
 
 type Season struct {
+	ID   uint   `json:"id"`
 	Name string `json:"name"`
 }

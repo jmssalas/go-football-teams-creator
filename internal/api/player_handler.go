@@ -36,9 +36,10 @@ func (h *PlayerHandler) GetPlayers(c *gin.Context) {
 	}
 
 	players := make([]Player, len(dbPlayers))
-	for i, dbPlayer := range dbPlayers {
+	for i, row := range dbPlayers {
 		players[i] = Player{
-			Name: dbPlayer.Name,
+			Name: row.Name,
+			ID:   row.ID,
 		}
 	}
 
