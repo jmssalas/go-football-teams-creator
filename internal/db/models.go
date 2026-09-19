@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	TeamA int = iota
+	TeamA uint = iota
 	TeamB
 )
 
@@ -24,18 +24,18 @@ type Season struct {
 
 type Match struct {
 	gorm.Model
-	Date     time.Time
-	AScore   int
-	BScore   int
-	SeasonID int
-	Season   Season
-	Players  []Player `gorm:"many2many:player_matches;"`
+	Date       time.Time
+	TeamAScore uint
+	TeamBScore uint
+	SeasonID   uint
+	Season     Season
+	Players    []Player `gorm:"many2many:player_matches;"`
 }
 
 type PlayerMatch struct {
 	gorm.Model
-	PlayerID int `gorm:"primaryKey"`
-	MatchID  int `gorm:"primaryKey"`
-	Team     int // TeamA, TeamB
-	Score    int
+	PlayerID uint `gorm:"primaryKey"`
+	MatchID  uint `gorm:"primaryKey"`
+	Team     uint // TeamA, TeamB
+	Score    uint
 }
