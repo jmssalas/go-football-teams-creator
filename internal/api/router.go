@@ -38,8 +38,11 @@ func Router(dbAdapter *db.DbAdapter) *gin.Engine {
 
 	r.POST("/api/matches", matchHandler.CreateMatch)
 
-	r.GET("/ping", func(c *gin.Context) {
-		OK(c, gin.H{"message": "pong"})
+	r.GET("/api/teams", func(c *gin.Context) {
+		OK(c, []any{}) // @TODO
+	})
+	r.POST("/api/teams", func(c *gin.Context) {
+		OK(c, []any{}) // @TODO
 	})
 
 	return r
