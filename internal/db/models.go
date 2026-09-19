@@ -17,6 +17,19 @@ type Player struct {
 	Matches []Match `gorm:"many2many:player_matches;"`
 }
 
+type PlayerStats struct {
+	ID                uint    `gorm:"column:id"`
+	Name              string  `gorm:"column:name"`
+	MatchesWon        uint    `gorm:"column:matches_won"`
+	MatchesDrawn      uint    `gorm:"column:matches_drawn"`
+	MatchesLost       uint    `gorm:"column:matches_lost"`
+	GoalsFor          uint    `gorm:"column:goals_for"`
+	GoalsAgainst      uint    `gorm:"column:goals_against"`
+	TotalMatches      uint    `gorm:"-"`
+	TotalPoints       uint    `gorm:"-"`
+	VictoryPercentage float64 `gorm:"-"`
+}
+
 type Season struct {
 	gorm.Model
 	Name string

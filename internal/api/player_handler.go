@@ -38,8 +38,16 @@ func (h *PlayerHandler) GetPlayers(c *gin.Context) {
 	players := make([]Player, len(dbPlayers))
 	for i, row := range dbPlayers {
 		players[i] = Player{
-			Name: row.Name,
-			ID:   row.ID,
+			ID:                row.ID,
+			Name:              row.Name,
+			MatchesWon:        row.MatchesWon,
+			MatchesDrawn:      row.MatchesDrawn,
+			MatchesLost:       row.MatchesLost,
+			GoalsFor:          row.GoalsFor,
+			GoalsAgainst:      row.GoalsAgainst,
+			TotalMatches:      row.TotalMatches,
+			TotalPoints:       row.TotalPoints,
+			VictoryPercentage: row.VictoryPercentage,
 		}
 	}
 

@@ -42,8 +42,16 @@ type CreateMatchReq struct {
 }
 
 type Player struct {
-	ID   uint   `json:"id"`
-	Name string `json:"name"`
+	ID                uint    `json:"id"`
+	Name              string  `json:"name"`
+	MatchesWon        uint    `json:"matchesWon"`
+	MatchesDrawn      uint    `json:"matchesDrawn"`
+	MatchesLost       uint    `json:"matchesLost"`
+	GoalsFor          uint    `json:"goalsFor"`
+	GoalsAgainst      uint    `json:"goalsAgainst"`
+	TotalMatches      uint    `json:"totalMatches"`
+	TotalPoints       uint    `json:"totalPoints"`
+	VictoryPercentage float64 `json:"victoryPercentage"`
 }
 
 type Season struct {
