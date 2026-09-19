@@ -24,11 +24,16 @@ func Fail(c *gin.Context, status int, code, message string) {
 
 func Router(dbAdapter *db.DbAdapter) *gin.Engine {
 	playerHandler := PlayerHandler{dbAdapter: dbAdapter}
+	seasonHandler := SeasonHandler{dbAdapter: dbAdapter}
 
 	r := gin.Default()
 
 	r.POST("/api/players", playerHandler.CreatePlayer)
 	r.GET("/api/players", playerHandler.GetPlayers)
+
+	r.POST("/api/seasons", seasonHandler.CreateSeason)
+	r.GET("/api/seasons", seasonHandler.GetSeasons)
+	r.GET("/api/seasons/current", seasonHandler.GetCurrentSeason)
 
 	r.GET("/ping", func(c *gin.Context) {
 		OK(c, gin.H{"message": "pong"})

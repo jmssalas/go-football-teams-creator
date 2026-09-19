@@ -31,6 +31,7 @@ func (a *DbAdapter) CloseDb() {
 	defer sqlDB.Close()
 }
 
+// Players
 func (a *DbAdapter) CreatePlayer(player *Player) error {
 	ctx := context.Background()
 	return gorm.G[Player](a.db).Create(ctx, player)
@@ -46,4 +47,20 @@ func (a *DbAdapter) DeletePlayer(id int) error {
 	_, err := gorm.G[Player](a.db).Where("id = ?", id).Delete(ctx)
 
 	return err
+}
+
+// Seasons
+func (a *DbAdapter) CreateSeason(season *Season) error {
+	ctx := context.Background()
+	return gorm.G[Season](a.db).Create(ctx, season)
+}
+
+func (a *DbAdapter) GetSeasons() ([]Season, error) {
+	ctx := context.Background()
+	return gorm.G[Season](a.db).Find(ctx)
+}
+
+func (a *DbAdapter) GetLastSeason() (Season, error) {
+	ctx := context.Background()
+	return gorm.G[Season](a.db).Last(ctx)
 }

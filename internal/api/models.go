@@ -23,6 +23,14 @@ type CreatePlayerReq struct {
 	Name string `json:"name" binding:"required"`
 }
 
+type CreateSeasonReq struct {
+	Name string `json:"name" binding:"required"`
+}
+
 type Player struct {
+	Name string `json:"name"`
+}
+
+type Season struct {
 	Name string `json:"name"`
 }

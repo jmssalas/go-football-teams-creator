@@ -19,9 +19,7 @@ type Player struct {
 
 type Season struct {
 	gorm.Model
-	Name  string
-	Start time.Time
-	End   time.Time
+	Name string
 }
 
 type Match struct {
