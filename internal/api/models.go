@@ -35,7 +35,7 @@ type TeamReq struct {
 }
 
 type CreateMatchReq struct {
-	Date     time.Time `json:"date"`
+	Date     time.Time `json:"date" binding:"required"`
 	SeasonID uint      `json:"seasonId" binding:"required"`
 	TeamA    []TeamReq `json:"teamA" binding:"required"`
 	TeamB    []TeamReq `json:"teamB" binding:"required"`
