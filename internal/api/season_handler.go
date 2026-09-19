@@ -52,5 +52,5 @@ func (h *SeasonHandler) GetCurrentSeason(c *gin.Context) {
 		//@TODO: Error handling
 	}
 
-	OK(c, dbSeason)
+	OK(c, Season{Name: dbSeason.Name})
 }
