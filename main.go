@@ -15,13 +15,13 @@ func main() {
 
 	r := api.Router(&dbAdapter)
 
-	r.StaticFS("/css", http.Dir("./internal/web/css"))
-	r.StaticFS("/js", http.Dir("./internal/web/js"))
-	r.StaticFS("/assets", http.Dir("./internal/web/assets"))
-	r.StaticFile("/", "./internal/web/index.html")
+	r.StaticFS("/css", http.Dir("./web/css"))
+	r.StaticFS("/js", http.Dir("./web/js"))
+	r.StaticFS("/assets", http.Dir("./web/assets"))
+	r.StaticFile("/", "./web/index.html")
 	r.NoRoute(func(c *gin.Context) {
 		if c.Request.Method == http.MethodGet {
-			c.File("./internal/web/index.html")
+			c.File("./web/index.html")
 			return
 		}
 
