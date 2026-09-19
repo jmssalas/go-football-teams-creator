@@ -48,27 +48,27 @@ func (a *DbAdapter) GetPlayers() ([]PlayerStats, error) {
 			players.id,
 			players.name,
 			COALESCE(SUM(CASE
-				WHEN (player_matches.team = @teamA AND matches.team_a_score > matches.team_b_score) OR
-					(player_matches.team = @teamB AND matches.team_b_score > matches.team_a_score)
+				WHEN (player_matches.team = @teamA AND matches.team_a_goals > matches.team_b_goals) OR
+					(player_matches.team = @teamB AND matches.team_b_goals > matches.team_a_goals)
 				THEN 1 ELSE 0
 			END), 0) AS matches_won,
 			COALESCE(SUM(CASE
-				WHEN matches.team_a_score = matches.team_b_score THEN 1
+				WHEN matches.team_a_goals = matches.team_b_goals THEN 1
 				ELSE 0
 			END), 0) AS matches_drawn,
 			COALESCE(SUM(CASE
-				WHEN (player_matches.team = @teamA AND matches.team_a_score < matches.team_b_score) OR
-					(player_matches.team = @teamB AND matches.team_b_score < matches.team_a_score)
+				WHEN (player_matches.team = @teamA AND matches.team_a_goals < matches.team_b_goals) OR
+					(player_matches.team = @teamB AND matches.team_b_goals < matches.team_a_goals)
 				THEN 1 ELSE 0
 			END), 0) AS matches_lost,
 			COALESCE(SUM(CASE
-				WHEN player_matches.team = @teamA THEN matches.team_a_score
-				WHEN player_matches.team = @teamB THEN matches.team_b_score
+				WHEN player_matches.team = @teamA THEN matches.team_a_goals
+				WHEN player_matches.team = @teamB THEN matches.team_b_goals
 				ELSE 0
 			END), 0) AS goals_for,
 			COALESCE(SUM(CASE
-				WHEN player_matches.team = @teamA THEN matches.team_b_score
-				WHEN player_matches.team = @teamB THEN matches.team_a_score
+				WHEN player_matches.team = @teamA THEN matches.team_b_goals
+				WHEN player_matches.team = @teamB THEN matches.team_a_goals
 				ELSE 0
 			END), 0) AS goals_against
 		FROM players

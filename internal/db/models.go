@@ -38,8 +38,8 @@ type Season struct {
 type Match struct {
 	gorm.Model
 	Date       time.Time
-	TeamAScore uint
-	TeamBScore uint
+	TeamAGoals uint
+	TeamBGoals uint
 	SeasonID   uint
 	Season     Season
 	Players    []Player `gorm:"many2many:player_matches;"`
@@ -50,5 +50,5 @@ type PlayerMatch struct {
 	PlayerID uint `gorm:"primaryKey"`
 	MatchID  uint `gorm:"primaryKey"`
 	Team     uint // TeamA, TeamB
-	Score    uint
+	Goals    uint
 }

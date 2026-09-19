@@ -31,7 +31,7 @@ type CreateSeasonReq struct {
 
 type TeamReq struct {
 	PlayerID uint `json:"playerId"`
-	Score    uint `json:"score"`
+	Goals    uint `json:"goals"`
 }
 
 type CreateMatchReq struct {

@@ -22,16 +22,16 @@ func (h *MatchHandler) CreateMatch(c *gin.Context) {
 	dbMatch := db.Match{
 		Date:       match.Date,
 		SeasonID:   match.SeasonID,
-		TeamAScore: 0,
-		TeamBScore: 0,
+		TeamAGoals: 0,
+		TeamBGoals: 0,
 	}
 
 	for _, p := range match.TeamA {
-		dbMatch.TeamAScore += p.Score
+		dbMatch.TeamAGoals += p.Goals
 	}
 
 	for _, p := range match.TeamB {
-		dbMatch.TeamBScore += p.Score
+		dbMatch.TeamBGoals += p.Goals
 	}
 
 	if err := h.dbAdapter.CreateMatch(&dbMatch); err != nil {
@@ -45,7 +45,7 @@ func (h *MatchHandler) CreateMatch(c *gin.Context) {
 			PlayerID: p.PlayerID,
 			MatchID:  dbMatch.ID,
 			Team:     db.TeamA,
-			Score:    p.Score,
+			Goals:    p.Goals,
 		}
 		i++
 	}
@@ -55,7 +55,7 @@ func (h *MatchHandler) CreateMatch(c *gin.Context) {
 			PlayerID: p.PlayerID,
 			MatchID:  dbMatch.ID,
 			Team:     db.TeamB,
-			Score:    p.Score,
+			Goals:    p.Goals,
 		}
 		i++
 	}
