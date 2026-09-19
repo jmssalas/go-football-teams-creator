@@ -70,7 +70,8 @@ func (a *DbAdapter) GetPlayers() ([]PlayerStats, error) {
 				WHEN player_matches.team = @teamA THEN matches.team_b_goals
 				WHEN player_matches.team = @teamB THEN matches.team_a_goals
 				ELSE 0
-			END), 0) AS goals_against
+			END), 0) AS goals_against,
+			COALESCE(SUM(player_matches.goals), 0) AS goals_scored
 		FROM players
 		LEFT JOIN player_matches ON players.id = player_matches.player_id
 		LEFT JOIN matches ON matches.id = player_matches.match_id

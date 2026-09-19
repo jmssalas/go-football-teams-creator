@@ -49,6 +49,7 @@ type Player struct {
 	MatchesLost       uint    `json:"matchesLost"`
 	GoalsFor          uint    `json:"goalsFor"`
 	GoalsAgainst      uint    `json:"goalsAgainst"`
+	GoalsScored       uint    `json:"goalsScored"`
 	TotalMatches      uint    `json:"totalMatches"`
 	TotalPoints       uint    `json:"totalPoints"`
 	VictoryPercentage float64 `json:"victoryPercentage"`
