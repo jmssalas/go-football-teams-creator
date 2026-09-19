@@ -1,5 +1,7 @@
 package api
 
+import "time"
+
 type Response struct {
 	Success bool       `json:"success"`
 	Data    any        `json:"data,omitempty"`
@@ -25,6 +27,18 @@ type CreatePlayerReq struct {
 
 type CreateSeasonReq struct {
 	Name string `json:"name" binding:"required"`
+}
+
+type TeamReq struct {
+	PlayerID uint `json:"playerId"`
+	Score    uint `json:"score"`
+}
+
+type CreateMatchReq struct {
+	Date     time.Time `json:"date"`
+	SeasonID uint      `json:"seasonId" binding:"required"`
+	TeamA    []TeamReq `json:"teamA" binding:"required"`
+	TeamB    []TeamReq `json:"teamB" binding:"required"`
 }
 
 type Player struct {

@@ -64,3 +64,15 @@ func (a *DbAdapter) GetLastSeason() (Season, error) {
 	ctx := context.Background()
 	return gorm.G[Season](a.db).Last(ctx)
 }
+
+// Matches
+func (a *DbAdapter) CreateMatch(match *Match) error {
+	ctx := context.Background()
+	result := gorm.WithResult()
+	return gorm.G[Match](a.db, result).Create(ctx, match)
+}
+
+func (a *DbAdapter) CreatePlayerMatches(playerMatches *[]PlayerMatch) error {
+	ctx := context.Background()
+	return gorm.G[PlayerMatch](a.db).CreateInBatches(ctx, playerMatches, 100) // Hardcoded on purpose. There is no need for a configurable value
+}
