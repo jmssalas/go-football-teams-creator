@@ -2,7 +2,10 @@ module football-teams-creator
 
 go 1.27.1
 
-require football-teams-creator/internals/api v0.0.0-00010101000000-000000000000
+require (
+	football-teams-creator/api v0.0.0-00010101000000-000000000000
+	football-teams-creator/db v0.0.0-00010101000000-000000000000
+)
 
 require (
 	github.com/bytedance/gopkg v0.1.4 // indirect
@@ -17,10 +20,13 @@ require (
 	github.com/go-playground/validator/v10 v10.30.4 // indirect
 	github.com/goccy/go-json v0.10.6 // indirect
 	github.com/goccy/go-yaml v1.19.2 // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.4.0 // indirect
 	github.com/leodido/go-urn v1.5.0 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
+	github.com/mattn/go-sqlite3 v1.14.52 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.4.3 // indirect
@@ -35,6 +41,10 @@ require (
 	golang.org/x/sys v0.48.0 // indirect
 	golang.org/x/text v0.42.0 // indirect
 	google.golang.org/protobuf v1.36.12 // indirect
+	gorm.io/driver/sqlite v1.6.0 // indirect
+	gorm.io/gorm v1.31.2 // indirect
 )
 
-replace football-teams-creator/internals/api => ./internals/api
+replace football-teams-creator/api => ./internal/api
+
+replace football-teams-creator/db => ./internal/db
