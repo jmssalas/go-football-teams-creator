@@ -93,6 +93,31 @@ button.delete {
     gap: 1rem;
     margin-bottom: 2rem;
 }
+.season-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+.season-summary div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.season-summary span {
+    color: var(--muted);
+    font-size: 0.875rem;
+}
+.season-only {
+    min-height: 12rem;
+    justify-content: center;
+}
+.season-only > :not(.season-summary) {
+    display: none;
+}
 .controls label,
 .score-section label,
 dialog label {

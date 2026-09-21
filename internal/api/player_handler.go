@@ -29,10 +29,18 @@ func (h *PlayerHandler) CreatePlayer(c *gin.Context) {
 }
 
 func (h *PlayerHandler) GetPlayers(c *gin.Context) {
-	dbPlayers, err := h.dbAdapter.GetPlayers()
+	currentSeason, err := h.dbAdapter.GetLastSeason()
 
 	if err != nil {
-		//@TODO: Error handling
+		Fail(c, http.StatusInternalServerError, "INTERNAL_SERVER_ERROR", err.Error())
+		return
+	}
+
+	dbPlayers, err := h.dbAdapter.GetPlayers(currentSeason.ID)
+
+	if err != nil {
+		Fail(c, http.StatusInternalServerError, "INTERNAL_SERVER_ERROR", err.Error())
+		return
 	}
 
 	players := make([]Player, len(dbPlayers))

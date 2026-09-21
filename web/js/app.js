@@ -13,6 +13,7 @@ document.getElementById("theme-toggle")?.addEventListener("click", () => {
 const state = {
     players: [],
     teams: [],
+    currentSeason: null,
 };
 
 async function request(url, options = {}) {
@@ -33,6 +34,14 @@ async function request(url, options = {}) {
 }
 
 async function loadData() {
+    const seasonResponse = await fetch("/api/seasons/current");
+    if (!seasonResponse.ok) {
+        state.currentSeason = null;
+        state.players = [];
+        state.teams = [];
+        return;
+    }
+
     const [playersResponse, teamsResponse] = await Promise.all([
         request("/api/players"),
         fetch("/api/teams"),
@@ -41,6 +50,7 @@ async function loadData() {
     state.players = (await playersResponse.json()).data;
     const teamsData = teamsResponse.ok ? (await teamsResponse.json()).data : [];
     state.teams = Array.isArray(teamsData) ? teamsData : teamsData.teams || [];
+    state.currentSeason = (await seasonResponse.json()).data;
 }
 
 async function loadView(view = "home") {

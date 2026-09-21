@@ -19,10 +19,9 @@ func (h *SeasonHandler) CreateSeason(c *gin.Context) {
 		return
 	}
 
-	err := h.dbAdapter.CreateSeason(&db.Season{Name: season.Name})
-
-	if err != nil {
-		// @TODO: Error handling
+	if err := h.dbAdapter.CreateSeason(&db.Season{Name: season.Name}); err != nil {
+		Fail(c, http.StatusInternalServerError, "INTERNAL_SERVER_ERROR", err.Error())
+		return
 	}
 
 	OK(c, nil)
@@ -32,7 +31,8 @@ func (h *SeasonHandler) GetSeasons(c *gin.Context) {
 	dbSeasons, err := h.dbAdapter.GetSeasons()
 
 	if err != nil {
-		//@TODO: Error handling
+		Fail(c, http.StatusInternalServerError, "INTERNAL_SERVER_ERROR", err.Error())
+		return
 	}
 
 	seasons := make([]Season, len(dbSeasons))
@@ -50,8 +50,9 @@ func (h *SeasonHandler) GetCurrentSeason(c *gin.Context) {
 	dbSeason, err := h.dbAdapter.GetLastSeason()
 
 	if err != nil {
-		//@TODO: Error handling
+		Fail(c, http.StatusInternalServerError, "INTERNAL_SERVER_ERROR", err.Error())
+		return
 	}
 
-	OK(c, Season{Name: dbSeason.Name})
+	OK(c, Season{ID: dbSeason.ID, Name: dbSeason.Name})
 }

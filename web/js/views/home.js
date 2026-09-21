@@ -1,6 +1,7 @@
 import { createTeams } from "../createTeams.js";
 
 export default function renderHome(app, state, refresh) {
+    const currentSeasonName = state.currentSeason?.name || "Sin temporada actual";
     const selectedPlayerIds = new Set(
         state.teams.flatMap((match) => [
             ...(match.teamA || []).map((player) => player.id),
@@ -12,6 +13,13 @@ export default function renderHome(app, state, refresh) {
     app.innerHTML = `
         <main class="content">
             <section class="controls">
+                <div class="season-summary">
+                    <div>
+                        <span>Temporada actual</span>
+                        <strong>${escapeHtml(currentSeasonName)}</strong>
+                    </div>
+                    <button id="new-season" class="ghost" type="button">Nueva temporada</button>
+                </div>
                 <label>
                     ¿Cuántos equipos sois?
                     <select id="team-count">
@@ -64,7 +72,24 @@ export default function renderHome(app, state, refresh) {
                 </div>
             </form>
         </dialog>
+        <dialog id="season-dialog">
+            <form id="season-form">
+                <h2>Nueva temporada</h2>
+                <label for="season-name">Nombre de la temporada</label>
+                <input id="season-name" required placeholder="Introduce el nombre de la temporada...">
+                <div class="dialog-actions">
+                    <button class="ghost" type="button" id="cancel-season">Cancelar</button>
+                    <button type="submit">Crear temporada</button>
+                </div>
+            </form>
+        </dialog>
     `;
+
+    if (!state.currentSeason) {
+        document.querySelector(".controls").classList.add("season-only");
+        document.querySelector(".teams-container").hidden = true;
+        document.querySelector(".table-section").hidden = true;
+    }
 
     document
         .querySelector("#create-teams")
@@ -180,7 +205,7 @@ export default function renderHome(app, state, refresh) {
                 method: "POST",
                 body: {
                     date: `${match.date}T00:00:00Z`,
-                    seasonId: 1, // @TODO: Change it to the selected Season ID
+                    seasonId: state.currentSeason.id,
                     teamA: match.teamA.map((player) => {
                         return { playerId: player.id };
                     }),
@@ -217,6 +242,28 @@ export default function renderHome(app, state, refresh) {
                 },
             });
             dialog.close();
+            await refresh();
+        });
+
+    const seasonDialog = document.querySelector("#season-dialog");
+    document
+        .querySelector("#new-season")
+        .addEventListener("click", () => seasonDialog.showModal());
+    document
+        .querySelector("#cancel-season")
+        .addEventListener("click", () => seasonDialog.close());
+    document
+        .querySelector("#season-form")
+        .addEventListener("submit", async (event) => {
+            event.preventDefault();
+            await request("/api/seasons", {
+                method: "POST",
+                body: {
+                    name: document.querySelector("#season-name").value.trim(),
+                },
+            });
+            await saveTeams([]);
+            seasonDialog.close();
             await refresh();
         });
 }
