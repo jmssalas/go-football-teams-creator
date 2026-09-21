@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"os"
 
 	"football-teams-creator/api"
 	"football-teams-creator/db"
@@ -10,9 +11,21 @@ import (
 )
 
 func main() {
+	dbFilepath := os.Getenv("SQLITE_DATABASE_PATH")
+	teamsFilepath := os.Getenv("TEAMS_DATA_PATH")
+	port := os.Getenv("PORT")
+	if port == "" {
+		panic("PORT is not set")
+	}
+	if dbFilepath == "" {
+		panic("SQLITE_DATABASE_PATH is not set")
+	}
+	if teamsFilepath == "" {
+		panic("TEAMS_DATA_PATH is not set")
+	}
+
 	var dbAdapter db.DbAdapter
-	dbAdapter.InitDb("./data/data.db")
-	teamsFilepath := "./data/teams.json"
+	dbAdapter.InitDb(dbFilepath)
 
 	r := api.Router(&dbAdapter, teamsFilepath)
 
@@ -29,7 +42,7 @@ func main() {
 		c.Status(http.StatusNotFound)
 	})
 
-	http.ListenAndServe(":8080", r)
+	http.ListenAndServe(":"+port, r)
 
 	dbAdapter.CloseDb()
 }

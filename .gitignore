@@ -34,3 +34,9 @@ go.work.sum
 # Data files
 *.db
 teams.json
+
+# PEM Files
+*.pem
+
+# Build test file
+build.txt
