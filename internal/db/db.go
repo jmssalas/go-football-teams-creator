@@ -70,8 +70,7 @@ func (a *DbAdapter) GetPlayers() ([]PlayerStats, error) {
 				WHEN player_matches.team = @teamA THEN matches.team_b_goals
 				WHEN player_matches.team = @teamB THEN matches.team_a_goals
 				ELSE 0
-			END), 0) AS goals_against,
-			COALESCE(SUM(player_matches.goals), 0) AS goals_scored
+			END), 0) AS goals_against
 		FROM players
 		LEFT JOIN player_matches ON players.id = player_matches.player_id
 		LEFT JOIN matches ON matches.id = player_matches.match_id
@@ -121,6 +120,7 @@ func (a *DbAdapter) GetLastSeason() (Season, error) {
 }
 
 // Matches
+// Create Match, adding the created ID to the match
 func (a *DbAdapter) CreateMatch(match *Match) error {
 	ctx := context.Background()
 	result := gorm.WithResult()

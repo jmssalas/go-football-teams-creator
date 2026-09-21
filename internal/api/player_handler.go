@@ -45,7 +45,6 @@ func (h *PlayerHandler) GetPlayers(c *gin.Context) {
 			MatchesLost:       row.MatchesLost,
 			GoalsFor:          row.GoalsFor,
 			GoalsAgainst:      row.GoalsAgainst,
-			GoalsScored:       row.GoalsScored,
 			TotalMatches:      row.TotalMatches,
 			TotalPoints:       row.TotalPoints,
 			VictoryPercentage: row.VictoryPercentage,

@@ -30,15 +30,16 @@ type CreateSeasonReq struct {
 }
 
 type TeamReq struct {
-	PlayerID uint `json:"playerId"`
-	Goals    uint `json:"goals"`
+	PlayerID uint `json:"playerId" binding:"required"`
 }
 
 type CreateMatchReq struct {
-	Date     time.Time `json:"date" binding:"required"`
-	SeasonID uint      `json:"seasonId" binding:"required"`
-	TeamA    []TeamReq `json:"teamA" binding:"required"`
-	TeamB    []TeamReq `json:"teamB" binding:"required"`
+	Date       time.Time `json:"date" binding:"required"`
+	SeasonID   uint      `json:"seasonId" binding:"required"`
+	TeamA      []TeamReq `json:"teamA" binding:"required"`
+	TeamB      []TeamReq `json:"teamB" binding:"required"`
+	TeamAGoals uint      `json:"teamAGoals" binding:"required"`
+	TeamBGoals uint      `json:"teamBGoals" binding:"required"`
 }
 
 type Player struct {
@@ -49,7 +50,6 @@ type Player struct {
 	MatchesLost       uint    `json:"matchesLost"`
 	GoalsFor          uint    `json:"goalsFor"`
 	GoalsAgainst      uint    `json:"goalsAgainst"`
-	GoalsScored       uint    `json:"goalsScored"`
 	TotalMatches      uint    `json:"totalMatches"`
 	TotalPoints       uint    `json:"totalPoints"`
 	VictoryPercentage float64 `json:"victoryPercentage"`

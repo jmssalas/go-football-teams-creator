@@ -25,7 +25,6 @@ type PlayerStats struct {
 	MatchesLost       uint    `gorm:"column:matches_lost"`
 	GoalsFor          uint    `gorm:"column:goals_for"`
 	GoalsAgainst      uint    `gorm:"column:goals_against"`
-	GoalsScored       uint    `gorm:"column:goals_scored"`
 	TotalMatches      uint    `gorm:"-"`
 	TotalPoints       uint    `gorm:"-"`
 	VictoryPercentage float64 `gorm:"-"`
@@ -51,5 +50,4 @@ type PlayerMatch struct {
 	PlayerID uint `gorm:"primaryKey"`
 	MatchID  uint `gorm:"primaryKey"`
 	Team     uint // TeamA, TeamB
-	Goals    uint
 }
