@@ -113,7 +113,7 @@ func (a *DbAdapter) CreateSeason(season *Season) error {
 
 func (a *DbAdapter) GetSeasons() ([]Season, error) {
 	ctx := context.Background()
-	return gorm.G[Season](a.db).Find(ctx)
+	return gorm.G[Season](a.db).Order("id desc").Find(ctx)
 }
 
 func (a *DbAdapter) GetLastSeason() (Season, error) {
