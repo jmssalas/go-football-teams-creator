@@ -140,10 +140,16 @@ export default function renderHome(app, state, refresh) {
             await request("/api/matches", {
                 method: "POST",
                 body: {
-                    teamA: match.teamA.map((player) => player.id),
-                    teamB: match.teamB.map((player) => player.id),
-                    teamAScore: match.teamAScore,
-                    teamBScore: match.teamBScore,
+                    date: new Date(), // @TODO: Change it to the selected Date
+                    seasonId: 1, // @TODO: Change it to the selected Season ID
+                    teamA: match.teamA.map((player) => {
+                        return { playerId: player.id };
+                    }),
+                    teamB: match.teamB.map((player) => {
+                        return { playerId: player.id };
+                    }),
+                    teamAGoals: match.teamAScore,
+                    teamBGoals: match.teamBScore,
                 },
             });
             await refresh();
