@@ -65,8 +65,9 @@ type DeletePlayerReq struct {
 }
 
 type TeamPlayer struct {
-	ID   uint   `json:"id"`
-	Name string `json:"name"`
+	ID                uint    `json:"id"`
+	Name              string  `json:"name"`
+	VictoryPercentage float64 `json:"victoryPercentage"`
 }
 
 type Teams struct {
