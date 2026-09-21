@@ -118,6 +118,9 @@ button.delete {
 .season-only > :not(.season-summary) {
     display: none;
 }
+.history-only > :not(.season-summary) {
+    display: none;
+}
 .controls label,
 .score-section label,
 dialog label {

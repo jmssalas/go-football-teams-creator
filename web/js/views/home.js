@@ -2,6 +2,7 @@ import { createTeams } from "../createTeams.js";
 
 export default function renderHome(app, state, refresh) {
     const currentSeasonName = state.currentSeason?.name || "Sin temporada actual";
+    const isCurrentSeason = state.selectedSeasonId === state.currentSeason?.id;
     const selectedPlayerIds = new Set(
         state.teams.flatMap((match) => [
             ...(match.teamA || []).map((player) => player.id),
@@ -15,8 +16,14 @@ export default function renderHome(app, state, refresh) {
             <section class="controls">
                 <div class="season-summary">
                     <div>
-                        <span>Temporada actual</span>
-                        <strong>${escapeHtml(currentSeasonName)}</strong>
+                        <span>Temporada seleccionada</span>
+                        <select id="season-select">
+                            ${state.seasons
+                                .map(
+                                    (season) => `<option value="${season.id}" ${season.id === state.selectedSeasonId ? "selected" : ""}>${escapeHtml(season.name)}${season.id === state.currentSeason?.id ? " (actual)" : ""}</option>`,
+                                )
+                                .join("")}
+                        </select>
                     </div>
                     <button id="new-season" class="ghost" type="button">Nueva temporada</button>
                 </div>
@@ -39,24 +46,24 @@ export default function renderHome(app, state, refresh) {
                 </div>
             </section>
 
-            <section class="teams-container">${renderMatches(state.teams)}</section>
+            <section class="teams-container">${isCurrentSeason ? renderMatches(state.teams) : ""}</section>
 
             <section class="table-section">
                 <div class="desktop-view">
                     <div class="section-heading">
                         <h2>Jugadores</h2>
-                        <button class="add-player" type="button">Añadir jugador</button>
+                        ${isCurrentSeason ? '<button class="add-player" type="button">Añadir jugador</button>' : ""}
                     </div>
-                    ${renderTable(state.players, selectedPlayerIds)}
+                    ${renderTable(state.players, selectedPlayerIds, !isCurrentSeason)}
                 </div>
 
                 <div class="mobile-view">
                     <div class="section-heading">
                         <h2>Jugadores</h2>
-                        <button class="add-player" type="button">Añadir</button>
+                        ${isCurrentSeason ? '<button class="add-player" type="button">Añadir</button>' : ""}
                     </div>
                     <div class="cards-container">
-                        ${state.players.map((player) => renderCard(player, selectedPlayerIds)).join("")}
+                        ${state.players.map((player) => renderCard(player, selectedPlayerIds, !isCurrentSeason)).join("")}
                     </div>
                 </div>
             </section>
@@ -89,11 +96,20 @@ export default function renderHome(app, state, refresh) {
         document.querySelector(".controls").classList.add("season-only");
         document.querySelector(".teams-container").hidden = true;
         document.querySelector(".table-section").hidden = true;
+    } else if (!isCurrentSeason) {
+        document.querySelector(".controls").classList.add("history-only");
+        document.querySelector(".teams-container").hidden = true;
     }
+
+    document.querySelector("#season-select")?.addEventListener("change", (event) => {
+        state.selectedSeasonId = Number(event.target.value);
+        refresh();
+    });
 
     document
         .querySelector("#create-teams")
         .addEventListener("click", async () => {
+            if (!isCurrentSeason) return;
             const selectedPlayers = state.players.filter((player) =>
                 selectedPlayerIds.has(player.id),
             );
@@ -111,6 +127,7 @@ export default function renderHome(app, state, refresh) {
     document
         .querySelector("#clear-teams")
         .addEventListener("click", async () => {
+            if (!isCurrentSeason) return;
             state.teams = [];
             await saveTeams([]);
             renderHome(app, state, refresh);
@@ -264,6 +281,7 @@ export default function renderHome(app, state, refresh) {
             });
             await saveTeams([]);
             seasonDialog.close();
+            state.selectedSeasonId = null;
             await refresh();
         });
 }
@@ -314,9 +332,9 @@ function renderTeam(title, players) {
     return `<div class="team"><h3>${title} <small>(Jugadores: ${players.length})</small></h3><div class="players-list">${players.map((player) => `<p>${escapeHtml(player.name)}</p>`).join("")}</div><div class="stats">Victorias: <strong>${winPercentage}%</strong></div></div>`;
 }
 
-function renderTable(players, selected) {
+function renderTable(players, selected, readOnly = false) {
     const headers = [
-        "",
+        ...(readOnly ? [] : [""]),
         "Nombre",
         "Ganados",
         "Empatados",
@@ -325,24 +343,24 @@ function renderTable(players, selected) {
         "Victoria %",
         "GF",
         "GC",
-        "",
+        ...(readOnly ? [] : [""]),
     ];
     return `<table><thead><tr>${headers.map((header) => `<th>${header}</th>`).join("")}</tr></thead><tbody>${players
         .map(
             (player) => `
-        <tr class="${selected.has(player.id) ? "selected" : ""}" data-player-id="${player.id}">
-            <td><input class="player-select" type="checkbox" data-player-select-id="${player.id}" ${selected.has(player.id) ? "checked" : ""} aria-label="Seleccionar ${escapeHtml(player.name)}"></td>
-            <td>${escapeHtml(player.name)}</td><td>${player.matchesWon ?? ""}</td><td>${player.matchesDrawn ?? ""}</td><td>${player.matchesLost ?? ""}</td><td>${player.totalPoints ?? ""}</td><td>${player.victoryPercentage ? `${Math.trunc(player.victoryPercentage)}%` : "0%"}</td><td>${player.goalsFor ?? ""}</td><td>${player.goalsAgainst ?? ""}</td><td><button class="delete" type="button" data-delete-id="${player.id}">×</button></td>
+        <tr class="${readOnly || !selected.has(player.id) ? "" : "selected"}"${readOnly ? "" : ` data-player-id="${player.id}"`}>
+            ${readOnly ? "" : `<td><input class="player-select" type="checkbox" data-player-select-id="${player.id}" ${selected.has(player.id) ? "checked" : ""} aria-label="Seleccionar ${escapeHtml(player.name)}"></td>`}
+            <td>${escapeHtml(player.name)}</td><td>${player.matchesWon ?? ""}</td><td>${player.matchesDrawn ?? ""}</td><td>${player.matchesLost ?? ""}</td><td>${player.totalPoints ?? ""}</td><td>${player.victoryPercentage ? `${Math.trunc(player.victoryPercentage)}%` : "0%"}</td><td>${player.goalsFor ?? ""}</td><td>${player.goalsAgainst ?? ""}</td>${readOnly ? "" : `<td><button class="delete" type="button" data-delete-id="${player.id}">×</button></td>`}
         </tr>`,
         )
         .join("")}</tbody></table>`;
 }
 
-function renderCard(player, selected) {
-    return `<article class="player-card ${selected.has(player.id) ? "selected" : ""}" data-player-id="${player.id}">
-        <div class="card-header"><div><h3>${escapeHtml(player.name)}</h3><p>${player.victoryPercentage ? Math.trunc(player.victoryPercentage) : 0}% victorias</p></div><button class="delete" type="button" data-delete-id="${player.id}">×</button></div>
+function renderCard(player, selected, readOnly = false) {
+    return `<article class="player-card ${readOnly || !selected.has(player.id) ? "" : "selected"}"${readOnly ? "" : ` data-player-id="${player.id}"`}>
+        <div class="card-header"><div><h3>${escapeHtml(player.name)}</h3><p>${player.victoryPercentage ? Math.trunc(player.victoryPercentage) : 0}% victorias</p></div>${readOnly ? "" : `<button class="delete" type="button" data-delete-id="${player.id}">×</button>`}</div>
         <div class="card-stats"><span>Ganados <b>${player.matchesWon ?? ""}</b></span><span>Empatados <b>${player.matchesDrawn ?? ""}</b></span><span>Perdidos <b>${player.matchesLost ?? ""}</b></span><span>Puntos <b>${player.totalPoints ?? ""}</b></span></div>
-        <div class="card-footer"><span>⚽ ${player.goalsFor ?? ""} - ${player.goalsAgainst ?? ""}</span><input type="checkbox" data-player-select-id="${player.id}" ${selected.has(player.id) ? "checked" : ""} aria-label="Seleccionar jugador"></div>
+        <div class="card-footer"><span>⚽ ${player.goalsFor ?? ""} - ${player.goalsAgainst ?? ""}</span>${readOnly ? "" : `<input type="checkbox" data-player-select-id="${player.id}" ${selected.has(player.id) ? "checked" : ""} aria-label="Seleccionar jugador">`}</div>
     </article>`;
 }
 

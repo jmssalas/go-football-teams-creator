@@ -29,14 +29,24 @@ func (h *PlayerHandler) CreatePlayer(c *gin.Context) {
 }
 
 func (h *PlayerHandler) GetPlayers(c *gin.Context) {
-	currentSeason, err := h.dbAdapter.GetLastSeason()
+	var season SeasonQuery
 
-	if err != nil {
-		Fail(c, http.StatusInternalServerError, "INTERNAL_SERVER_ERROR", err.Error())
+	if err := c.ShouldBindQuery(&season); err != nil {
+		Fail(c, http.StatusBadRequest, "BAD_REQUEST", err.Error())
 		return
 	}
 
-	dbPlayers, err := h.dbAdapter.GetPlayers(currentSeason.ID)
+	seasonID := season.SeasonID
+	if seasonID == 0 {
+		currentSeason, err := h.dbAdapter.GetLastSeason()
+		if err != nil {
+			Fail(c, http.StatusInternalServerError, "INTERNAL_SERVER_ERROR", err.Error())
+			return
+		}
+		seasonID = currentSeason.ID
+	}
+
+	dbPlayers, err := h.dbAdapter.GetPlayers(seasonID)
 
 	if err != nil {
 		Fail(c, http.StatusInternalServerError, "INTERNAL_SERVER_ERROR", err.Error())

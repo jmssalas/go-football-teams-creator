@@ -81,3 +81,7 @@ type TeamsReq struct {
 }
 
 type TeamsRes TeamsReq
+
+type SeasonQuery struct {
+	SeasonID uint `form:"seasonId"`
+}

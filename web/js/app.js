@@ -14,6 +14,8 @@ const state = {
     players: [],
     teams: [],
     currentSeason: null,
+    seasons: [],
+    selectedSeasonId: null,
 };
 
 async function request(url, options = {}) {
@@ -34,23 +36,35 @@ async function request(url, options = {}) {
 }
 
 async function loadData() {
-    const seasonResponse = await fetch("/api/seasons/current");
+    const [seasonResponse, seasonsResponse] = await Promise.all([
+        fetch("/api/seasons/current"),
+        request("/api/seasons"),
+    ]);
+    state.seasons = (await seasonsResponse.json()).data || [];
+
     if (!seasonResponse.ok) {
         state.currentSeason = null;
+        state.selectedSeasonId = null;
         state.players = [];
         state.teams = [];
         return;
     }
 
+    state.currentSeason = (await seasonResponse.json()).data;
+    if (!state.seasons.some((season) => season.id === state.selectedSeasonId)) {
+        state.selectedSeasonId = state.currentSeason.id;
+    }
+
     const [playersResponse, teamsResponse] = await Promise.all([
-        request("/api/players"),
-        fetch("/api/teams"),
+        request(`/api/players?seasonId=${state.selectedSeasonId}`),
+        state.selectedSeasonId === state.currentSeason.id
+            ? fetch("/api/teams")
+            : Promise.resolve(null),
     ]);
 
     state.players = (await playersResponse.json()).data;
-    const teamsData = teamsResponse.ok ? (await teamsResponse.json()).data : [];
+    const teamsData = teamsResponse?.ok ? (await teamsResponse.json()).data : [];
     state.teams = Array.isArray(teamsData) ? teamsData : teamsData.teams || [];
-    state.currentSeason = (await seasonResponse.json()).data;
 }
 
 async function loadView(view = "home") {
