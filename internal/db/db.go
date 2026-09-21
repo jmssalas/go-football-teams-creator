@@ -74,6 +74,7 @@ func (a *DbAdapter) GetPlayers() ([]PlayerStats, error) {
 		FROM players
 		LEFT JOIN player_matches ON players.id = player_matches.player_id
 		LEFT JOIN matches ON matches.id = player_matches.match_id
+		WHERE players.deleted_at IS NULL
 		GROUP BY players.id, players.name
 		ORDER BY players.name`,
 		sql.Named("teamA", TeamA),
