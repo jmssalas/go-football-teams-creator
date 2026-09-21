@@ -65,19 +65,19 @@ type DeletePlayerReq struct {
 }
 
 type TeamPlayer struct {
-	ID                uint    `json:"id"`
-	Name              string  `json:"name"`
-	VictoryPercentage float64 `json:"victoryPercentage"`
+	ID                uint    `json:"id" binding:"required"`
+	Name              string  `json:"name" binding:"required"`
+	VictoryPercentage float64 `json:"victoryPercentage" binding:"required"`
 }
 
 type Teams struct {
-	TeamA []TeamPlayer `json:"teamA"`
-	TeamB []TeamPlayer `json:"teamB"`
-	Date  string       `json:"date,omitempty"`
+	TeamA []TeamPlayer `json:"teamA" binding:"required"`
+	TeamB []TeamPlayer `json:"teamB" binding:"required"`
+	Date  string       `json:"date,omitempty" binding:"required"`
 }
 
 type TeamsReq struct {
-	Teams []Teams `json:"teams"`
+	Teams []Teams `json:"teams" binding:"required"`
 }
 
 type TeamsRes TeamsReq
