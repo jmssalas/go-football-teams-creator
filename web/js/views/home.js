@@ -76,6 +76,9 @@ export default function renderHome(app, state, refresh) {
                 selectedPlayers,
                 Number(document.querySelector("#team-count").value),
             );
+            state.teams.forEach((match) => {
+                match.date = formatDateInput(match.date);
+            });
             await saveTeams(state.teams);
             renderHome(app, state, refresh);
         });
@@ -146,13 +149,28 @@ export default function renderHome(app, state, refresh) {
             const [index, side] = input.dataset.score.split(":");
             state.teams[index][side] =
                 input.value === "" ? undefined : Number(input.value);
-            input
-                .closest(".team-match")
-                .querySelector("[data-match-index]").disabled =
-                state.teams[index].teamAScore === undefined ||
-                state.teams[index].teamBScore === undefined;
+            updateMatchButton(index);
         });
     });
+
+    document.querySelectorAll("[data-match-date]").forEach((input) => {
+        input.addEventListener("input", async () => {
+            const index = Number(input.dataset.matchDate);
+            state.teams[index].date = input.value || undefined;
+            await saveTeams(state.teams);
+            updateMatchButton(index);
+        });
+    });
+
+    function updateMatchButton(index) {
+        const match = state.teams[index];
+        document.querySelector(
+            `[data-match-index="${index}"]`,
+        ).disabled =
+            !match.date ||
+            match.teamAScore === undefined ||
+            match.teamBScore === undefined;
+    }
 
     document.querySelectorAll("[data-match-index]").forEach((button) => {
         button.addEventListener("click", async () => {
@@ -161,7 +179,7 @@ export default function renderHome(app, state, refresh) {
             await request("/api/matches", {
                 method: "POST",
                 body: {
-                    date: new Date(), // @TODO: Change it to the selected Date
+                    date: `${match.date}T00:00:00Z`,
                     seasonId: 1, // @TODO: Change it to the selected Season ID
                     teamA: match.teamA.map((player) => {
                         return { playerId: player.id };
@@ -206,21 +224,35 @@ export default function renderHome(app, state, refresh) {
 function renderMatches(matches) {
     return matches
         .map(
-            (match, index) => `
+            (match, index) => {
+                match.date = formatDateInput(match.date);
+                return `
         <article class="team-match">
             <div class="teams-grid">
                 ${renderTeam(`Equipo ${index * 2 + 1}`, match.teamA || [])}
                 ${renderTeam(`Equipo ${index * 2 + 2}`, match.teamB || [])}
             </div>
             <div class="score-section">
+                <label>Fecha<input type="date" data-match-date="${index}" value="${match.date}"></label>
                 <label>Goles Equipo ${index * 2 + 1}<input type="number" min="0" data-score="${index}:teamAScore" value="${match.teamAScore ?? ""}"></label>
                 <label>Goles Equipo ${index * 2 + 2}<input type="number" min="0" data-score="${index}:teamBScore" value="${match.teamBScore ?? ""}"></label>
-                <button type="button" data-match-index="${index}" ${match.teamAScore === undefined || match.teamBScore === undefined ? "disabled" : ""}>Registrar</button>
+                <button type="button" data-match-index="${index}" ${!match.date || match.teamAScore === undefined || match.teamBScore === undefined ? "disabled" : ""}>Registrar</button>
             </div>
         </article>
-    `,
+    `;
+            },
         )
         .join("");
+}
+
+function formatDateInput(date) {
+    if (!date) return new Date().toISOString().slice(0, 10);
+    if (/^\d{4}-\d{2}-\d{2}$/.test(date)) return date;
+
+    const parsedDate = new Date(date);
+    return Number.isNaN(parsedDate.getTime())
+        ? new Date().toISOString().slice(0, 10)
+        : parsedDate.toISOString().slice(0, 10);
 }
 
 function renderTeam(title, players) {

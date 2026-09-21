@@ -72,6 +72,7 @@ type TeamPlayer struct {
 type Teams struct {
 	TeamA []TeamPlayer `json:"teamA"`
 	TeamB []TeamPlayer `json:"teamB"`
+	Date  string       `json:"date,omitempty"`
 }
 
 type TeamsReq struct {
