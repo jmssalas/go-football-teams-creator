@@ -31,6 +31,7 @@ func Router(dbAdapter *db.DbAdapter) *gin.Engine {
 
 	r.POST("/api/players", playerHandler.CreatePlayer)
 	r.GET("/api/players", playerHandler.GetPlayers)
+	r.DELETE("/api/players/:id", playerHandler.DeletePlayer)
 
 	r.POST("/api/seasons", seasonHandler.CreateSeason)
 	r.GET("/api/seasons", seasonHandler.GetSeasons)

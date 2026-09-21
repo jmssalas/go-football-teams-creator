@@ -96,7 +96,7 @@ func (a *DbAdapter) GetPlayers() ([]PlayerStats, error) {
 	return players, nil
 }
 
-func (a *DbAdapter) DeletePlayer(id int) error {
+func (a *DbAdapter) DeletePlayer(id uint) error {
 	ctx := context.Background()
 	_, err := gorm.G[Player](a.db).Where("id = ?", id).Delete(ctx)
 

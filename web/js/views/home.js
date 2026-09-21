@@ -113,9 +113,8 @@ export default function renderHome(app, state, refresh) {
                 button.textContent = "✓";
                 return;
             }
-            await request("/api/players", {
+            await request(`/api/players/${Number(button.dataset.deleteId)}`, {
                 method: "DELETE",
-                body: { id: Number(button.dataset.deleteId) },
             });
             await refresh();
         });

@@ -53,3 +53,18 @@ func (h *PlayerHandler) GetPlayers(c *gin.Context) {
 
 	OK(c, players)
 }
+
+func (h *PlayerHandler) DeletePlayer(c *gin.Context) {
+	var player DeletePlayerReq
+
+	if err := c.ShouldBindUri(&player); err != nil {
+		Fail(c, http.StatusBadRequest, "BAD_REQUEST", "invalid request")
+		return
+	}
+
+	if err := h.dbAdapter.DeletePlayer(player.ID); err != nil {
+		// @TODO: Error handling
+	}
+
+	OK(c, nil)
+}

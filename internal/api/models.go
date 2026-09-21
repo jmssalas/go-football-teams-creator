@@ -59,3 +59,7 @@ type Season struct {
 	ID   uint   `json:"id"`
 	Name string `json:"name"`
 }
+
+type DeletePlayerReq struct {
+	ID uint `uri:"id" binding:"required"`
+}
