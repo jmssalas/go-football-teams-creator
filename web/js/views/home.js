@@ -135,7 +135,8 @@ export default function renderHome(app, state, refresh) {
 
     document.querySelectorAll("[data-match-index]").forEach((button) => {
         button.addEventListener("click", async () => {
-            const match = state.teams[Number(button.dataset.matchIndex)];
+            const matchIndex = Number(button.dataset.matchIndex);
+            const match = state.teams[matchIndex];
             await request("/api/matches", {
                 method: "POST",
                 body: {
@@ -151,6 +152,8 @@ export default function renderHome(app, state, refresh) {
                     teamBGoals: match.teamBScore,
                 },
             });
+            state.teams.splice(matchIndex, 1);
+            await saveTeams(state.teams);
             await refresh();
         });
     });
