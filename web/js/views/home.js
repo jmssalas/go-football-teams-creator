@@ -88,20 +88,41 @@ export default function renderHome(app, state, refresh) {
             renderHome(app, state, refresh);
         });
 
+    const updatePlayerSelection = (id, selected) => {
+        selected ? selectedPlayerIds.add(id) : selectedPlayerIds.delete(id);
+        document
+            .querySelectorAll(`[data-player-id="${id}"]`)
+            .forEach((element) => element.classList.toggle("selected", selected));
+        document
+            .querySelectorAll(`[data-player-select-id="${id}"]`)
+            .forEach((checkbox) => (checkbox.checked = selected));
+        document.querySelector("#selected-count").textContent =
+            selectedPlayerIds.size;
+        document.querySelector("#create-teams").disabled =
+            selectedPlayerIds.size === 0;
+    };
+
     document.querySelectorAll("[data-player-id]").forEach((element) => {
         element.addEventListener("click", (event) => {
-            if (event.target.closest("[data-delete-id]")) return;
+            if (
+                event.target.closest("[data-delete-id]") ||
+                event.target.closest("[data-player-select-id]")
+            )
+                return;
             const id = Number(element.dataset.playerId);
-            selectedPlayerIds.has(id)
-                ? selectedPlayerIds.delete(id)
-                : selectedPlayerIds.add(id);
-            element.classList.toggle("selected", selectedPlayerIds.has(id));
-            const checkbox = element.querySelector('input[type="checkbox"]');
-            if (checkbox) checkbox.checked = selectedPlayerIds.has(id);
-            document.querySelector("#selected-count").textContent =
-                selectedPlayerIds.size;
-            document.querySelector("#create-teams").disabled =
-                selectedPlayerIds.size === 0;
+            updatePlayerSelection(id, !selectedPlayerIds.has(id));
+        });
+    });
+
+    document.querySelectorAll("[data-player-select-id]").forEach((checkbox) => {
+        checkbox.addEventListener("click", (event) => {
+            event.stopPropagation();
+        });
+        checkbox.addEventListener("change", () => {
+            updatePlayerSelection(
+                Number(checkbox.dataset.playerSelectId),
+                checkbox.checked,
+            );
         });
     });
 
@@ -216,6 +237,7 @@ function renderTeam(title, players) {
 
 function renderTable(players, selected) {
     const headers = [
+        "",
         "Nombre",
         "Ganados",
         "Empatados",
@@ -230,6 +252,7 @@ function renderTable(players, selected) {
         .map(
             (player) => `
         <tr class="${selected.has(player.id) ? "selected" : ""}" data-player-id="${player.id}">
+            <td><input class="player-select" type="checkbox" data-player-select-id="${player.id}" ${selected.has(player.id) ? "checked" : ""} aria-label="Seleccionar ${escapeHtml(player.name)}"></td>
             <td>${escapeHtml(player.name)}</td><td>${player.matchesWon ?? ""}</td><td>${player.matchesDrawn ?? ""}</td><td>${player.matchesLost ?? ""}</td><td>${player.totalPoints ?? ""}</td><td>${player.victoryPercentage ? `${Math.trunc(player.victoryPercentage)}%` : "0%"}</td><td>${player.goalsFor ?? ""}</td><td>${player.goalsAgainst ?? ""}</td><td><button class="delete" type="button" data-delete-id="${player.id}">×</button></td>
         </tr>`,
         )
@@ -240,7 +263,7 @@ function renderCard(player, selected) {
     return `<article class="player-card ${selected.has(player.id) ? "selected" : ""}" data-player-id="${player.id}">
         <div class="card-header"><div><h3>${escapeHtml(player.name)}</h3><p>${player.victoryPercentage ? Math.trunc(player.victoryPercentage) : 0}% victorias</p></div><button class="delete" type="button" data-delete-id="${player.id}">×</button></div>
         <div class="card-stats"><span>Ganados <b>${player.matchesWon ?? ""}</b></span><span>Empatados <b>${player.matchesDrawn ?? ""}</b></span><span>Perdidos <b>${player.matchesLost ?? ""}</b></span><span>Puntos <b>${player.totalPoints ?? ""}</b></span></div>
-        <div class="card-footer"><span>⚽ ${player.goalsFor ?? ""} - ${player.goalsAgainst ?? ""}</span><input type="checkbox" ${selected.has(player.id) ? "checked" : ""} tabindex="-1" aria-label="Seleccionar jugador"></div>
+        <div class="card-footer"><span>⚽ ${player.goalsFor ?? ""} - ${player.goalsAgainst ?? ""}</span><input type="checkbox" data-player-select-id="${player.id}" ${selected.has(player.id) ? "checked" : ""} aria-label="Seleccionar jugador"></div>
     </article>`;
 }
 

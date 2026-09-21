@@ -6,6 +6,8 @@
     --text: #f4f4f4;
     --muted: #c6c6c6;
     --interactive: #0f62fe;
+    --selection-background: #1d3557;
+    --selection-border: #78a9ff;
 }
 
 :root.light-theme {
@@ -15,6 +17,8 @@
     --border: #c6c6c6;
     --text: #161616;
     --muted: #525252;
+    --selection-background: #e8f1ff;
+    --selection-border: #0f62fe;
 }
 
 * {
@@ -97,7 +101,7 @@ dialog label {
     gap: 0.35rem;
 }
 select,
-input {
+input:not([type="checkbox"]) {
     border: 1px solid var(--border);
     border-radius: 3px;
     padding: 0.65rem;
@@ -187,7 +191,25 @@ tr[data-player-id],
 }
 tr.selected,
 .player-card.selected {
-    outline: 2px solid var(--interactive);
+    background: var(--selection-background);
+}
+tr.selected td {
+    background: var(--selection-background);
+    border-bottom-color: var(--selection-border);
+}
+tr.selected td:first-child {
+    box-shadow: inset 3px 0 0 var(--selection-border);
+}
+.player-card.selected {
+    border-color: var(--selection-border);
+}
+.player-select {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin: 0;
+    padding: 0;
+    accent-color: var(--interactive);
+    cursor: pointer;
 }
 .mobile-view {
     display: none;
