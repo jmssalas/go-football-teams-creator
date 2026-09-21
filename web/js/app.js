@@ -2,14 +2,6 @@ import renderHome from "./views/home.js";
 
 const app = document.getElementById("app");
 
-const savedTheme = localStorage.getItem("theme");
-if (savedTheme === "light") document.documentElement.classList.add("light-theme");
-
-document.getElementById("theme-toggle")?.addEventListener("click", () => {
-    document.documentElement.classList.toggle("light-theme");
-    localStorage.setItem("theme", document.documentElement.classList.contains("light-theme") ? "light" : "dark");
-});
-
 const state = {
     players: [],
     teams: [],

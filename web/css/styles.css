@@ -10,17 +10,6 @@
     --selection-border: #78a9ff;
 }
 
-:root.light-theme {
-    color-scheme: light;
-    --background: #ffffff;
-    --surface: #f4f4f4;
-    --border: #c6c6c6;
-    --text: #161616;
-    --muted: #525252;
-    --selection-background: #e8f1ff;
-    --selection-border: #0f62fe;
-}
-
 * {
     box-sizing: border-box;
 }
@@ -75,12 +64,6 @@ button.delete {
     margin-left: 0.75rem;
     color: var(--muted);
 }
-#theme-toggle {
-    padding: 0.35rem 0.65rem;
-    background: transparent;
-    font-size: 1.25rem;
-}
-
 .content {
     max-width: 1200px;
     margin: auto;
