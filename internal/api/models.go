@@ -63,3 +63,19 @@ type Season struct {
 type DeletePlayerReq struct {
 	ID uint `uri:"id" binding:"required"`
 }
+
+type TeamPlayer struct {
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
+}
+
+type Teams struct {
+	TeamA []TeamPlayer `json:"teamA"`
+	TeamB []TeamPlayer `json:"teamB"`
+}
+
+type TeamsReq struct {
+	Teams []Teams `json:"teams"`
+}
+
+type TeamsRes TeamsReq

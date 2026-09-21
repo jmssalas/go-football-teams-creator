@@ -22,10 +22,11 @@ func Fail(c *gin.Context, status int, code, message string) {
 	})
 }
 
-func Router(dbAdapter *db.DbAdapter) *gin.Engine {
+func Router(dbAdapter *db.DbAdapter, teamsFilePath string) *gin.Engine {
 	playerHandler := PlayerHandler{dbAdapter: dbAdapter}
 	seasonHandler := SeasonHandler{dbAdapter: dbAdapter}
 	matchHandler := MatchHandler{dbAdapter: dbAdapter}
+	teamsHandler := TeamsHandler{filepath: teamsFilePath}
 
 	r := gin.Default()
 
@@ -39,12 +40,8 @@ func Router(dbAdapter *db.DbAdapter) *gin.Engine {
 
 	r.POST("/api/matches", matchHandler.CreateMatch)
 
-	r.GET("/api/teams", func(c *gin.Context) {
-		OK(c, []any{}) // @TODO
-	})
-	r.POST("/api/teams", func(c *gin.Context) {
-		OK(c, []any{}) // @TODO
-	})
+	r.GET("/api/teams", teamsHandler.GetTeams)
+	r.POST("/api/teams", teamsHandler.CreateTeams)
 
 	return r
 }

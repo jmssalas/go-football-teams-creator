@@ -12,8 +12,9 @@ import (
 func main() {
 	var dbAdapter db.DbAdapter
 	dbAdapter.InitDb("./data/data.db")
+	teamsFilepath := "./data/teams.json"
 
-	r := api.Router(&dbAdapter)
+	r := api.Router(&dbAdapter, teamsFilepath)
 
 	r.StaticFS("/css", http.Dir("./web/css")).Use(noCacheMiddleware())
 	r.StaticFS("/js", http.Dir("./web/js")).Use(noCacheMiddleware())
