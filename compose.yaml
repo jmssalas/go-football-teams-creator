@@ -1,0 +1,16 @@
+services:
+  football-teams-creator:
+    build: .
+    container_name: football-teams-creator
+    restart: unless-stopped
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      PORT: 8080
+      SQLITE_DATABASE_PATH: /app/data/data.db
+      TEAMS_DATA_PATH: /app/data/teams.json
+
+    volumes:
+      - ./data:/app/data
