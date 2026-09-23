@@ -11,7 +11,7 @@ services:
             PORT: ${PORT}
             SQLITE_DATABASE_PATH: ${SQLITE_DATABASE_PATH}
             TEAMS_DATA_PATH: ${TEAMS_DATA_PATH}
-            APP_TITLE: ${APP_TITLE}
+            GIN_MODE: ${GIN_MODE}
 
         volumes:
             - ./data:/app/data
