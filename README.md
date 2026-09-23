@@ -74,6 +74,16 @@ http://localhost:8080
 
 The Go application serves the frontend assets directly from the `web/` directory, so no separate frontend build step is required.
 
+## Deployment
+
+The application is packaged as a Docker image and published to GitHub Container Registry on every push to `master`.
+
+A public demo instance is deployed as a Docker container using Docker Compose. Runtime configuration is provided through environment variables, while application data is persisted outside the container.
+
+The demo instance is available at:
+
+https://demo-ftc.jmssalas.com/
+
 ## API
 
 The application exposes a REST API for the main resources.
